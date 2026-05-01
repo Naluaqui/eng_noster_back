@@ -2,6 +2,11 @@ export type GoogleAuthInput = {
   credential: string;
 };
 
+export type GoogleAuthCodeInput = {
+  code: string;
+  redirectUri?: string;
+};
+
 export type AuthUser = {
   id: string;
   name: string;

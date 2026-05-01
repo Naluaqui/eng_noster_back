@@ -8,6 +8,7 @@ import type { AuthSession, GoogleAuthCodeInput, GoogleAuthInput } from './auth.t
 const googleClient = new OAuth2Client(env.googleClientId);
 
 type GoogleProfile = {
+  sub?: string;
   email?: string;
   name?: string;
   picture?: string;
@@ -25,6 +26,7 @@ async function createSessionFromGoogleProfile(profile: GoogleProfile): Promise<A
       name: profile.name ?? profile.email,
       email: profile.email,
       avatarUrl: profile.picture,
+      googleId: profile.sub,
     });
   }
 
@@ -66,6 +68,7 @@ export async function signInWithGoogle(input: GoogleAuthInput): Promise<AuthSess
   const payload = await verifyGoogleCredential(input.credential);
 
   return createSessionFromGoogleProfile({
+    sub: payload?.sub,
     email: payload?.email,
     name: payload?.name,
     picture: payload?.picture,
@@ -101,6 +104,7 @@ export async function signInWithGoogleCode(input: GoogleAuthCodeInput): Promise<
     const payload = await verifyGoogleCredential(tokens.id_token);
 
     return createSessionFromGoogleProfile({
+      sub: payload?.sub,
       email: payload?.email,
       name: payload?.name,
       picture: payload?.picture,

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: eng_decision_postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: eng_decision
+      POSTGRES_PASSWORD: eng_decision_dev_password
+      POSTGRES_DB: eng_decision_dev
+    volumes:
+      - eng_decision_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  eng_decision_postgres_data:

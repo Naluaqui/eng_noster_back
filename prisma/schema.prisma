@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MeetingStatus {
+  scheduled
+  in_review
+  decided
+}
+
+enum CompanyRole {
+  owner
+  admin
+  member
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  avatarUrl String?
+  googleId  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships CompanyMember[]
+  meetings    Meeting[]
+
+  @@map("users")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members  CompanyMember[]
+  meetings Meeting[]
+
+  @@map("companies")
+}
+
+model CompanyMember {
+  id        String      @id @default(uuid())
+  role      CompanyRole @default(owner)
+  createdAt DateTime    @default(now())
+
+  userId    String
+  companyId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@map("company_members")
+}
+
+model Meeting {
+  id           String        @id @default(uuid())
+  title        String        @db.VarChar(120)
+  date         DateTime      @db.Date
+  time         String        @db.VarChar(5)
+  participants String[]      @default([])
+  status       MeetingStatus @default(scheduled)
+  summary      String        @db.VarChar(500)
+  owner        String        @db.VarChar(80)
+  tags         String[]      @default([])
+  signalCount  Int           @default(0)
+  product      String?       @db.VarChar(80)
+  description  String?       @db.VarChar(500)
+  notes        String?       @db.VarChar(1000)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  companyId String
+  createdBy String
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator User    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@map("meetings")
+}

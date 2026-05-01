@@ -3,9 +3,15 @@ import {
   createMeeting,
   findMeetingById,
   findMeetings,
+  updateMeeting,
   updateMeetingStatus,
 } from './meetings.repository';
-import type { CreateMeetingInput, MeetingStatus, UpdateMeetingStatusInput } from './meetings.types';
+import type {
+  CreateMeetingInput,
+  MeetingStatus,
+  UpdateMeetingInput,
+  UpdateMeetingStatusInput,
+} from './meetings.types';
 
 const meetingStatuses: MeetingStatus[] = ['scheduled', 'in-review', 'decided'];
 
@@ -85,6 +91,12 @@ export async function changeMeetingStatus(meetingId: string, input: UpdateMeetin
 }
 
 export async function scheduleMeeting(input: CreateMeetingInput) {
+  const normalizedInput = normalizeMeetingInput(input);
+
+  return createMeeting(normalizedInput);
+}
+
+function normalizeMeetingInput(input: CreateMeetingInput | UpdateMeetingInput) {
   const title = normalizeText(input.title);
   const date = normalizeText(input.date);
   const time = normalizeText(input.time);
@@ -121,7 +133,7 @@ export async function scheduleMeeting(input: CreateMeetingInput) {
     throw new AppError('Cada pessoa envolvida deve ter ate 80 caracteres.', 400);
   }
 
-  return createMeeting({
+  return {
     title,
     date,
     time,
@@ -129,5 +141,16 @@ export async function scheduleMeeting(input: CreateMeetingInput) {
     product,
     description,
     notes,
-  });
+  };
+}
+
+export async function editMeeting(meetingId: string, input: UpdateMeetingInput) {
+  const normalizedInput = normalizeMeetingInput(input);
+  const meeting = await updateMeeting(meetingId, normalizedInput);
+
+  if (!meeting) {
+    throw new AppError('Reuniao nao encontrada.', 404);
+  }
+
+  return meeting;
 }

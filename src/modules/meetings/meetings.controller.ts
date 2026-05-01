@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { successResponse } from '../../shared/http/response';
 import {
   changeMeetingStatus,
+  editMeeting,
   getMeeting,
   listMeetings,
   scheduleMeeting,
@@ -37,4 +38,12 @@ export async function createMeetingController(request: Request, response: Respon
   return response
     .status(201)
     .json(successResponse(meeting, 'Reuniao criada com sucesso.'));
+}
+
+export async function updateMeetingController(request: Request, response: Response) {
+  const meeting = await editMeeting(String(request.params.meetingId), request.body);
+
+  return response
+    .status(200)
+    .json(successResponse(meeting, 'Reuniao atualizada com sucesso.'));
 }

@@ -1,6 +1,6 @@
 import { prisma } from '../../infra/database/prisma.client';
 import type { MeetingStatus as DatabaseMeetingStatus } from '../../generated/prisma/enums';
-import type { CreateMeetingInput, Meeting, MeetingStatus } from './meetings.types';
+import type { CreateMeetingInput, Meeting, MeetingStatus, UpdateMeetingInput } from './meetings.types';
 
 type DatabaseMeeting = {
   id: string;
@@ -258,4 +258,33 @@ export async function createMeeting(input: CreateMeetingInput) {
   });
 
   return mapMeetingToApi(meeting);
+}
+
+export async function updateMeeting(meetingId: string, input: UpdateMeetingInput) {
+  const participants = input.participants ?? [];
+  const product = input.product?.trim();
+  const description = input.description?.trim();
+  const notes = input.notes?.trim();
+
+  const meeting = await prisma.meeting
+    .update({
+      where: {
+        id: meetingId,
+      },
+      data: {
+        title: input.title.trim(),
+        date: toDatabaseDate(input.date),
+        time: input.time,
+        participants,
+        summary: description || notes || 'Reuniao criada para analise no NOSTER.',
+        owner: participants[0] ?? 'NOSTER',
+        tags: product ? [product] : [],
+        product: product || null,
+        description: description || null,
+        notes: notes || null,
+      },
+    })
+    .catch(() => null);
+
+  return meeting ? mapMeetingToApi(meeting) : null;
 }

@@ -5,11 +5,23 @@ import {
   editMeeting,
   getMeeting,
   listMeetings,
+  removeMeeting,
   scheduleMeeting,
 } from './meetings.service';
 
-export async function listMeetingsController(_request: Request, response: Response) {
-  const meetings = await listMeetings();
+function getCompanyId(request: Request) {
+  const headerCompanyId = request.header('x-company-id');
+  const queryCompanyId = request.query.companyId;
+
+  if (typeof queryCompanyId === 'string') {
+    return queryCompanyId;
+  }
+
+  return headerCompanyId;
+}
+
+export async function listMeetingsController(request: Request, response: Response) {
+  const meetings = await listMeetings(getCompanyId(request));
 
   return response
     .status(200)
@@ -17,7 +29,7 @@ export async function listMeetingsController(_request: Request, response: Respon
 }
 
 export async function getMeetingController(request: Request, response: Response) {
-  const meeting = await getMeeting(String(request.params.meetingId));
+  const meeting = await getMeeting(String(request.params.meetingId), getCompanyId(request));
 
   return response
     .status(200)
@@ -25,7 +37,11 @@ export async function getMeetingController(request: Request, response: Response)
 }
 
 export async function updateMeetingStatusController(request: Request, response: Response) {
-  const meeting = await changeMeetingStatus(String(request.params.meetingId), request.body);
+  const meeting = await changeMeetingStatus(
+    String(request.params.meetingId),
+    getCompanyId(request),
+    request.body,
+  );
 
   return response
     .status(200)
@@ -33,7 +49,7 @@ export async function updateMeetingStatusController(request: Request, response: 
 }
 
 export async function createMeetingController(request: Request, response: Response) {
-  const meeting = await scheduleMeeting(request.body);
+  const meeting = await scheduleMeeting(getCompanyId(request), request.body);
 
   return response
     .status(201)
@@ -41,9 +57,17 @@ export async function createMeetingController(request: Request, response: Respon
 }
 
 export async function updateMeetingController(request: Request, response: Response) {
-  const meeting = await editMeeting(String(request.params.meetingId), request.body);
+  const meeting = await editMeeting(String(request.params.meetingId), getCompanyId(request), request.body);
 
   return response
     .status(200)
     .json(successResponse(meeting, 'Reuniao atualizada com sucesso.'));
+}
+
+export async function deleteMeetingController(request: Request, response: Response) {
+  const meeting = await removeMeeting(String(request.params.meetingId), getCompanyId(request));
+
+  return response
+    .status(200)
+    .json(successResponse(meeting, 'Reuniao excluida com sucesso.'));
 }

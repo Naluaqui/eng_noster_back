@@ -1,6 +1,7 @@
 import { AppError } from '../../shared/errors/AppError';
 import {
   createMeeting,
+  deleteMeeting,
   findMeetingById,
   findMeetings,
   updateMeeting,
@@ -60,12 +61,12 @@ function normalizeParticipants(value: unknown) {
     .slice(0, 24);
 }
 
-export async function listMeetings() {
-  return findMeetings();
+export async function listMeetings(companyId?: string) {
+  return findMeetings(companyId);
 }
 
-export async function getMeeting(meetingId: string) {
-  const meeting = await findMeetingById(meetingId);
+export async function getMeeting(meetingId: string, companyId?: string) {
+  const meeting = await findMeetingById(meetingId, companyId);
 
   if (!meeting) {
     throw new AppError('Reuniao nao encontrada.', 404);
@@ -74,14 +75,14 @@ export async function getMeeting(meetingId: string) {
   return meeting;
 }
 
-export async function changeMeetingStatus(meetingId: string, input: UpdateMeetingStatusInput) {
+export async function changeMeetingStatus(meetingId: string, companyId: string | undefined, input: UpdateMeetingStatusInput) {
   if (!isMeetingStatus(input.status)) {
     throw new AppError('Status de reuniao invalido.', 400, {
       allowedStatuses: meetingStatuses,
     });
   }
 
-  const meeting = await updateMeetingStatus(meetingId, input.status);
+  const meeting = await updateMeetingStatus(meetingId, companyId, input.status);
 
   if (!meeting) {
     throw new AppError('Reuniao nao encontrada.', 404);
@@ -90,10 +91,15 @@ export async function changeMeetingStatus(meetingId: string, input: UpdateMeetin
   return meeting;
 }
 
-export async function scheduleMeeting(input: CreateMeetingInput) {
+export async function scheduleMeeting(companyId: string | undefined, input: CreateMeetingInput) {
   const normalizedInput = normalizeMeetingInput(input);
+  const meeting = await createMeeting(companyId, normalizedInput);
 
-  return createMeeting(normalizedInput);
+  if (!meeting) {
+    throw new AppError('Empresa nao encontrada.', 404);
+  }
+
+  return meeting;
 }
 
 function normalizeMeetingInput(input: CreateMeetingInput | UpdateMeetingInput) {
@@ -144,9 +150,19 @@ function normalizeMeetingInput(input: CreateMeetingInput | UpdateMeetingInput) {
   };
 }
 
-export async function editMeeting(meetingId: string, input: UpdateMeetingInput) {
+export async function editMeeting(meetingId: string, companyId: string | undefined, input: UpdateMeetingInput) {
   const normalizedInput = normalizeMeetingInput(input);
-  const meeting = await updateMeeting(meetingId, normalizedInput);
+  const meeting = await updateMeeting(meetingId, companyId, normalizedInput);
+
+  if (!meeting) {
+    throw new AppError('Reuniao nao encontrada.', 404);
+  }
+
+  return meeting;
+}
+
+export async function removeMeeting(meetingId: string, companyId?: string) {
+  const meeting = await deleteMeeting(meetingId, companyId);
 
   if (!meeting) {
     throw new AppError('Reuniao nao encontrada.', 404);

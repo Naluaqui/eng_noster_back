@@ -161,6 +161,25 @@ async function ensureDefaultWorkspace() {
   };
 }
 
+async function resolveCompanyId(companyId?: string) {
+  if (companyId) {
+    const company = await prisma.company.findUnique({
+      where: {
+        id: companyId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return company?.id ?? null;
+  }
+
+  const workspace = await ensureDefaultWorkspace();
+
+  return workspace.companyId;
+}
+
 async function ensureDefaultMeetings() {
   const meetingsCount = await prisma.meeting.count();
 
@@ -190,10 +209,17 @@ async function ensureDefaultMeetings() {
   });
 }
 
-export async function findMeetings() {
-  await ensureDefaultMeetings();
+export async function findMeetings(companyId?: string) {
+  const resolvedCompanyId = await resolveCompanyId(companyId);
+
+  if (!resolvedCompanyId) {
+    return [];
+  }
 
   const meetings = await prisma.meeting.findMany({
+    where: {
+      companyId: resolvedCompanyId,
+    },
     orderBy: [
       {
         createdAt: 'desc',
@@ -204,20 +230,31 @@ export async function findMeetings() {
   return meetings.map(mapMeetingToApi);
 }
 
-export async function findMeetingById(meetingId: string) {
-  await ensureDefaultMeetings();
+export async function findMeetingById(meetingId: string, companyId?: string) {
+  const resolvedCompanyId = await resolveCompanyId(companyId);
 
-  const meeting = await prisma.meeting.findUnique({
+  if (!resolvedCompanyId) {
+    return null;
+  }
+
+  const meeting = await prisma.meeting.findFirst({
     where: {
       id: meetingId,
+      companyId: resolvedCompanyId,
     },
   });
 
   return meeting ? mapMeetingToApi(meeting) : null;
 }
 
-export async function updateMeetingStatus(meetingId: string, status: MeetingStatus) {
-  const meeting = await prisma.meeting
+export async function updateMeetingStatus(meetingId: string, companyId: string | undefined, status: MeetingStatus) {
+  const meeting = await findMeetingRecord(meetingId, companyId);
+
+  if (!meeting) {
+    return null;
+  }
+
+  const updatedMeeting = await prisma.meeting
     .update({
       where: {
         id: meetingId,
@@ -228,11 +265,32 @@ export async function updateMeetingStatus(meetingId: string, status: MeetingStat
     })
     .catch(() => null);
 
-  return meeting ? mapMeetingToApi(meeting) : null;
+  return updatedMeeting ? mapMeetingToApi(updatedMeeting) : null;
 }
 
-export async function createMeeting(input: CreateMeetingInput) {
+async function findMeetingRecord(meetingId: string, companyId?: string) {
+  const resolvedCompanyId = await resolveCompanyId(companyId);
+
+  if (!resolvedCompanyId) {
+    return null;
+  }
+
+  return prisma.meeting.findFirst({
+    where: {
+      id: meetingId,
+      companyId: resolvedCompanyId,
+    },
+  });
+}
+
+export async function createMeeting(companyId: string | undefined, input: CreateMeetingInput) {
   const workspace = await ensureDefaultWorkspace();
+  const resolvedCompanyId = await resolveCompanyId(companyId);
+
+  if (!resolvedCompanyId) {
+    return null;
+  }
+
   const participants = input.participants ?? [];
   const product = input.product?.trim();
   const description = input.description?.trim();
@@ -252,7 +310,7 @@ export async function createMeeting(input: CreateMeetingInput) {
       product: product || undefined,
       description: description || undefined,
       notes: notes || undefined,
-      companyId: workspace.companyId,
+      companyId: resolvedCompanyId,
       createdBy: workspace.userId,
     },
   });
@@ -260,7 +318,13 @@ export async function createMeeting(input: CreateMeetingInput) {
   return mapMeetingToApi(meeting);
 }
 
-export async function updateMeeting(meetingId: string, input: UpdateMeetingInput) {
+export async function updateMeeting(meetingId: string, companyId: string | undefined, input: UpdateMeetingInput) {
+  const existingMeeting = await findMeetingRecord(meetingId, companyId);
+
+  if (!existingMeeting) {
+    return null;
+  }
+
   const participants = input.participants ?? [];
   const product = input.product?.trim();
   const description = input.description?.trim();
@@ -287,4 +351,20 @@ export async function updateMeeting(meetingId: string, input: UpdateMeetingInput
     .catch(() => null);
 
   return meeting ? mapMeetingToApi(meeting) : null;
+}
+
+export async function deleteMeeting(meetingId: string, companyId?: string) {
+  const existingMeeting = await findMeetingRecord(meetingId, companyId);
+
+  if (!existingMeeting) {
+    return null;
+  }
+
+  await prisma.meeting.delete({
+    where: {
+      id: meetingId,
+    },
+  });
+
+  return mapMeetingToApi(existingMeeting);
 }

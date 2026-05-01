@@ -54,7 +54,11 @@ export const ModelName = {
   User: 'User',
   Company: 'Company',
   CompanyMember: 'CompanyMember',
-  Meeting: 'Meeting'
+  Meeting: 'Meeting',
+  CompanyProduct: 'CompanyProduct',
+  CompanyTeam: 'CompanyTeam',
+  CompanyGroup: 'CompanyGroup',
+  CompanyPerson: 'CompanyPerson'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -89,6 +93,9 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const CompanyScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  about: 'about',
+  objectives: 'objectives',
+  culture: 'culture',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -128,6 +135,61 @@ export const MeetingScalarFieldEnum = {
 } as const
 
 export type MeetingScalarFieldEnum = (typeof MeetingScalarFieldEnum)[keyof typeof MeetingScalarFieldEnum]
+
+
+export const CompanyProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  about: 'about',
+  solutionObjective: 'solutionObjective',
+  technology: 'technology',
+  targetAudience: 'targetAudience',
+  averagePrice: 'averagePrice',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  companyId: 'companyId'
+} as const
+
+export type CompanyProductScalarFieldEnum = (typeof CompanyProductScalarFieldEnum)[keyof typeof CompanyProductScalarFieldEnum]
+
+
+export const CompanyTeamScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  about: 'about',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  companyId: 'companyId'
+} as const
+
+export type CompanyTeamScalarFieldEnum = (typeof CompanyTeamScalarFieldEnum)[keyof typeof CompanyTeamScalarFieldEnum]
+
+
+export const CompanyGroupScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  about: 'about',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  teamId: 'teamId'
+} as const
+
+export type CompanyGroupScalarFieldEnum = (typeof CompanyGroupScalarFieldEnum)[keyof typeof CompanyGroupScalarFieldEnum]
+
+
+export const CompanyPersonScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  role: 'role',
+  reportsToEmail: 'reportsToEmail',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  companyId: 'companyId',
+  teamId: 'teamId',
+  groupId: 'groupId'
+} as const
+
+export type CompanyPersonScalarFieldEnum = (typeof CompanyPersonScalarFieldEnum)[keyof typeof CompanyPersonScalarFieldEnum]
 
 
 export const SortOrder = {

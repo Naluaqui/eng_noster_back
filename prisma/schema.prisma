@@ -35,13 +35,19 @@ model User {
 }
 
 model Company {
-  id        String   @id @default(uuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  about      String   @default("")
+  objectives String   @default("")
+  culture    String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   members  CompanyMember[]
   meetings Meeting[]
+  products CompanyProduct[]
+  teams    CompanyTeam[]
+  people   CompanyPerson[]
 
   @@map("companies")
 }
@@ -85,4 +91,72 @@ model Meeting {
   creator User    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
 
   @@map("meetings")
+}
+
+model CompanyProduct {
+  id                String   @id @default(uuid())
+  name              String   @db.VarChar(120)
+  about             String   @db.VarChar(1000)
+  solutionObjective String   @db.VarChar(1000)
+  technology        String   @db.VarChar(500)
+  targetAudience    String   @db.VarChar(500)
+  averagePrice      String   @db.VarChar(120)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  companyId String
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("company_products")
+}
+
+model CompanyTeam {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(120)
+  about     String?  @db.VarChar(1000)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companyId String
+
+  company Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  groups  CompanyGroup[]
+  people  CompanyPerson[]
+
+  @@map("company_teams")
+}
+
+model CompanyGroup {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(120)
+  about     String?  @db.VarChar(1000)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teamId String
+
+  team   CompanyTeam     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  people CompanyPerson[]
+
+  @@map("company_groups")
+}
+
+model CompanyPerson {
+  id             String   @id @default(uuid())
+  email          String   @db.VarChar(255)
+  role           String?  @db.VarChar(120)
+  reportsToEmail String?  @db.VarChar(255)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  companyId String
+  teamId    String
+  groupId   String?
+
+  company Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  team    CompanyTeam   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  group   CompanyGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  @@map("company_people")
 }

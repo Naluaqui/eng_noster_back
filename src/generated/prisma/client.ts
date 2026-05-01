@@ -59,3 +59,23 @@ export type CompanyMember = Prisma.CompanyMemberModel
  * 
  */
 export type Meeting = Prisma.MeetingModel
+/**
+ * Model CompanyProduct
+ * 
+ */
+export type CompanyProduct = Prisma.CompanyProductModel
+/**
+ * Model CompanyTeam
+ * 
+ */
+export type CompanyTeam = Prisma.CompanyTeamModel
+/**
+ * Model CompanyGroup
+ * 
+ */
+export type CompanyGroup = Prisma.CompanyGroupModel
+/**
+ * Model CompanyPerson
+ * 
+ */
+export type CompanyPerson = Prisma.CompanyPersonModel

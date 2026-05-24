@@ -14,7 +14,7 @@ import type {
   UpdateMeetingStatusInput,
 } from './meetings.types';
 
-const meetingStatuses: MeetingStatus[] = ['scheduled', 'in-review', 'decided'];
+const meetingStatuses: MeetingStatus[] = ['scheduled', 'in-review', 'decided', 'analyzed'];
 
 function isMeetingStatus(status: unknown): status is MeetingStatus {
   return typeof status === 'string' && meetingStatuses.includes(status as MeetingStatus);
@@ -108,6 +108,7 @@ function normalizeMeetingInput(input: CreateMeetingInput | UpdateMeetingInput) {
   const time = normalizeText(input.time);
   const product = normalizeOptionalText(input.product);
   const description = normalizeOptionalText(input.description);
+  const transcription = normalizeOptionalText(input.transcription);
   const notes = normalizeOptionalText(input.notes);
   const participants = normalizeParticipants(input.participants);
 
@@ -127,6 +128,10 @@ function normalizeMeetingInput(input: CreateMeetingInput | UpdateMeetingInput) {
     throw new AppError('Produto deve ter ate 80 caracteres.', 400);
   }
 
+  if (description && description.length > 500) {
+    throw new AppError('Descricao deve ter ate 500 caracteres.', 400);
+  }
+
   if (notes && notes.length > 1000) {
     throw new AppError('Anotacoes devem ter ate 1000 caracteres.', 400);
   }
@@ -142,6 +147,7 @@ function normalizeMeetingInput(input: CreateMeetingInput | UpdateMeetingInput) {
     participants,
     product,
     description,
+    transcription,
     notes,
   };
 }

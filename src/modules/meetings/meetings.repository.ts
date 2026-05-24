@@ -15,6 +15,7 @@ type DatabaseMeeting = {
   signalCount: number;
   product: string | null;
   description: string | null;
+  transcription: string | null;
   notes: string | null;
 };
 
@@ -31,6 +32,7 @@ const defaultMeetings: Array<Omit<Meeting, 'id'>> = [
     signalCount: 6,
     product: 'NOSTER',
     description: 'Alinhar escopo de IA multi-perspectiva e rituais de decisao do produto.',
+    transcription: 'Alinhar escopo de IA multi-perspectiva e rituais de decisao do produto.',
   },
   {
     title: 'Priorizacao de roadmap',
@@ -44,6 +46,7 @@ const defaultMeetings: Array<Omit<Meeting, 'id'>> = [
     signalCount: 11,
     product: 'Roadmap',
     description: 'Comparar impacto, esforco e percepcao de valor das proximas entregas.',
+    transcription: 'Comparar impacto, esforco e percepcao de valor das proximas entregas.',
   },
   {
     title: 'Go / no-go comercial',
@@ -57,6 +60,7 @@ const defaultMeetings: Array<Omit<Meeting, 'id'>> = [
     signalCount: 8,
     product: 'Implantacao',
     description: 'Registrar decisao comercial e criterios para avancar com implantacao.',
+    transcription: 'Registrar decisao comercial e criterios para avancar com implantacao.',
   },
   {
     title: 'Analise de objecoes',
@@ -70,6 +74,7 @@ const defaultMeetings: Array<Omit<Meeting, 'id'>> = [
     signalCount: 14,
     product: 'Comercial',
     description: 'Transformar duvidas recorrentes em narrativa de valor e proximos passos.',
+    transcription: 'Transformar duvidas recorrentes em narrativa de valor e proximos passos.',
   },
 ];
 
@@ -92,8 +97,8 @@ function toApiStatus(status: DatabaseMeetingStatus): MeetingStatus {
   return status === 'in_review' ? 'in-review' : status;
 }
 
-function createSummary(description?: string, notes?: string) {
-  return (description || notes || defaultMeetingSummary).slice(0, maximumSummaryLength);
+function createSummary(description?: string) {
+  return (description || defaultMeetingSummary).slice(0, maximumSummaryLength);
 }
 
 function mapMeetingToApi(meeting: DatabaseMeeting): Meeting {
@@ -110,6 +115,7 @@ function mapMeetingToApi(meeting: DatabaseMeeting): Meeting {
     signalCount: meeting.signalCount,
     product: meeting.product ?? undefined,
     description: meeting.description ?? undefined,
+    transcription: meeting.transcription ?? undefined,
     notes: meeting.notes ?? undefined,
   };
 }
@@ -209,6 +215,7 @@ async function ensureDefaultMeetings() {
       signalCount: meeting.signalCount,
       product: meeting.product,
       description: meeting.description,
+      transcription: meeting.transcription,
       notes: meeting.notes,
       companyId: workspace.companyId,
       createdBy: workspace.userId,
@@ -301,6 +308,7 @@ export async function createMeeting(companyId: string | undefined, input: Create
   const participants = input.participants ?? [];
   const product = input.product?.trim();
   const description = input.description?.trim();
+  const transcription = input.transcription?.trim();
   const notes = input.notes?.trim();
 
   const meeting = await prisma.meeting.create({
@@ -310,12 +318,13 @@ export async function createMeeting(companyId: string | undefined, input: Create
       time: input.time,
       participants,
       status: 'scheduled',
-      summary: createSummary(description, notes),
+      summary: createSummary(description),
       owner: participants[0] ?? 'NOSTER',
       tags: product ? [product] : [],
       signalCount: 0,
       product: product || undefined,
       description: description || undefined,
+      transcription: transcription || undefined,
       notes: notes || undefined,
       companyId: resolvedCompanyId,
       createdBy: workspace.userId,
@@ -335,6 +344,7 @@ export async function updateMeeting(meetingId: string, companyId: string | undef
   const participants = input.participants ?? [];
   const product = input.product?.trim();
   const description = input.description?.trim();
+  const transcription = input.transcription?.trim();
   const notes = input.notes?.trim();
 
   const meeting = await prisma.meeting
@@ -347,17 +357,58 @@ export async function updateMeeting(meetingId: string, companyId: string | undef
         date: toDatabaseDate(input.date),
         time: input.time,
         participants,
-        summary: createSummary(description, notes),
+        summary: createSummary(description),
         owner: participants[0] ?? 'NOSTER',
         tags: product ? [product] : [],
         product: product || null,
         description: description || null,
+        transcription: transcription || null,
         notes: notes || null,
       },
     })
     .catch(() => null);
 
   return meeting ? mapMeetingToApi(meeting) : null;
+}
+
+export async function markMeetingsAnalyzed(
+  meetingIds: string[],
+  companyId: string | undefined,
+  executiveSummary: string,
+) {
+  const resolvedCompanyId = await resolveCompanyId(companyId);
+
+  if (!resolvedCompanyId) {
+    return;
+  }
+
+  await prisma.meeting.updateMany({
+    where: {
+      id: { in: meetingIds },
+      companyId: resolvedCompanyId,
+    },
+    data: {
+      status: 'analyzed',
+    },
+  });
+
+  const fallbackDescription = executiveSummary.trim().slice(0, maximumSummaryLength);
+
+  if (!fallbackDescription) {
+    return;
+  }
+
+  await prisma.meeting.updateMany({
+    where: {
+      id: { in: meetingIds },
+      companyId: resolvedCompanyId,
+      OR: [{ description: null }, { description: '' }],
+    },
+    data: {
+      description: fallbackDescription,
+      summary: fallbackDescription,
+    },
+  });
 }
 
 export async function deleteMeeting(meetingId: string, companyId?: string) {

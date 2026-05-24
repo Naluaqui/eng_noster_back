@@ -8,6 +8,7 @@ import type {
   CompanyTeamSettings,
   UpdateCompanySettingsInput,
 } from './settings.types';
+import { totvsProductsAndServicesCatalog } from './totvs-catalog';
 
 type CompanyPersonRecord = {
   id: string;
@@ -142,6 +143,11 @@ export async function createCompany(name: string): Promise<CompanySummary> {
   const company = await prisma.company.create({
     data: {
       name,
+      products: {
+        createMany: {
+          data: totvsProductsAndServicesCatalog.map(productData),
+        },
+      },
       members: {
         create: {
           role: 'owner',
@@ -210,7 +216,35 @@ async function findCompanySettingsRecord(companyId: string) {
   });
 }
 
+async function ensureTotvsCatalog(companyId: string) {
+  const storedProducts = await prisma.companyProduct.findMany({
+    where: {
+      companyId,
+    },
+    select: {
+      name: true,
+    },
+  });
+  const storedNames = new Set(storedProducts.map((product) => product.name.trim().toLocaleLowerCase()));
+  const uniqueCatalog = new Map(
+    totvsProductsAndServicesCatalog.map((product) => [product.name.trim().toLocaleLowerCase(), product]),
+  );
+  const missingProducts = Array.from(uniqueCatalog.values()).filter(
+    (product) => !storedNames.has(product.name.trim().toLocaleLowerCase()),
+  );
+
+  if (missingProducts.length > 0) {
+    await prisma.companyProduct.createMany({
+      data: missingProducts.map((product) => ({
+        companyId,
+        ...productData(product),
+      })),
+    });
+  }
+}
+
 export async function findCompanySettings(companyId: string) {
+  await ensureTotvsCatalog(companyId);
   const company = await findCompanySettingsRecord(companyId);
 
   if (!company) {

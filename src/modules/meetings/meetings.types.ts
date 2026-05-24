@@ -1,4 +1,4 @@
-export type MeetingStatus = 'scheduled' | 'in-review' | 'decided';
+export type MeetingStatus = 'scheduled' | 'in-review' | 'decided' | 'analyzed';
 
 export type Meeting = {
   id: string;
@@ -13,6 +13,7 @@ export type Meeting = {
   signalCount: number;
   product?: string;
   description?: string;
+  transcription?: string;
   notes?: string;
 };
 
@@ -27,6 +28,7 @@ export type CreateMeetingInput = {
   participants?: string[];
   product?: string;
   description?: string;
+  transcription?: string;
   notes?: string;
 };
 

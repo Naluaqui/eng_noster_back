@@ -106,17 +106,17 @@ function normalizeProduct(product: CompanyProductSettings): CompanyProductSettin
   const targetAudience = normalizeText(product.targetAudience);
   const averagePrice = normalizeText(product.averagePrice);
 
-  assertRequired(name, 'Nome do produto');
-  assertRequired(about, 'Sobre do produto');
+  assertRequired(name, 'Nome do produto ou servico');
+  assertRequired(about, 'Para que serve');
   assertRequired(solutionObjective, 'Objetivo da solucao');
-  assertRequired(technology, 'Tecnologia');
-  assertRequired(targetAudience, 'Publico alvo');
+  assertRequired(technology, 'Linha ou segmento');
+  assertRequired(targetAudience, 'Para quem e');
   assertRequired(averagePrice, 'Media de preco');
-  assertMax(name, 120, 'Nome do produto');
-  assertMax(about, 1000, 'Sobre do produto');
+  assertMax(name, 120, 'Nome do produto ou servico');
+  assertMax(about, 1000, 'Para que serve');
   assertMax(solutionObjective, 1000, 'Objetivo da solucao');
-  assertMax(technology, 500, 'Tecnologia');
-  assertMax(targetAudience, 500, 'Publico alvo');
+  assertMax(technology, 500, 'Linha ou segmento');
+  assertMax(targetAudience, 500, 'Para quem e');
   assertMax(averagePrice, 120, 'Media de preco');
 
   return {

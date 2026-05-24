@@ -11,6 +11,7 @@ enum MeetingStatus {
   scheduled
   in_review
   decided
+  analyzed
 }
 
 enum CompanyRole {
@@ -79,7 +80,8 @@ model Meeting {
   tags         String[]      @default([])
   signalCount  Int           @default(0)
   product      String?       @db.VarChar(80)
-  description  String?       @db.Text
+  description  String?       @db.VarChar(500)
+  transcription String?      @db.Text
   notes        String?       @db.VarChar(1000)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt

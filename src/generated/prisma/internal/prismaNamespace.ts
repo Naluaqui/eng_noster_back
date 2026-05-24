@@ -1092,6 +1092,7 @@ export const MeetingScalarFieldEnum = {
   signalCount: 'signalCount',
   product: 'product',
   description: 'description',
+  transcription: 'transcription',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

@@ -45,6 +45,7 @@ export type MeetingMinAggregateOutputType = {
   signalCount: number | null
   product: string | null
   description: string | null
+  transcription: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -63,6 +64,7 @@ export type MeetingMaxAggregateOutputType = {
   signalCount: number | null
   product: string | null
   description: string | null
+  transcription: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -83,6 +85,7 @@ export type MeetingCountAggregateOutputType = {
   signalCount: number
   product: number
   description: number
+  transcription: number
   notes: number
   createdAt: number
   updatedAt: number
@@ -111,6 +114,7 @@ export type MeetingMinAggregateInputType = {
   signalCount?: true
   product?: true
   description?: true
+  transcription?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -129,6 +133,7 @@ export type MeetingMaxAggregateInputType = {
   signalCount?: true
   product?: true
   description?: true
+  transcription?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -149,6 +154,7 @@ export type MeetingCountAggregateInputType = {
   signalCount?: true
   product?: true
   description?: true
+  transcription?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -256,6 +262,7 @@ export type MeetingGroupByOutputType = {
   signalCount: number
   product: string | null
   description: string | null
+  transcription: string | null
   notes: string | null
   createdAt: Date
   updatedAt: Date
@@ -299,6 +306,7 @@ export type MeetingWhereInput = {
   signalCount?: Prisma.IntFilter<"Meeting"> | number
   product?: Prisma.StringNullableFilter<"Meeting"> | string | null
   description?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  transcription?: Prisma.StringNullableFilter<"Meeting"> | string | null
   notes?: Prisma.StringNullableFilter<"Meeting"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
@@ -321,6 +329,7 @@ export type MeetingOrderByWithRelationInput = {
   signalCount?: Prisma.SortOrder
   product?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  transcription?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -346,6 +355,7 @@ export type MeetingWhereUniqueInput = Prisma.AtLeast<{
   signalCount?: Prisma.IntFilter<"Meeting"> | number
   product?: Prisma.StringNullableFilter<"Meeting"> | string | null
   description?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  transcription?: Prisma.StringNullableFilter<"Meeting"> | string | null
   notes?: Prisma.StringNullableFilter<"Meeting"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
@@ -368,6 +378,7 @@ export type MeetingOrderByWithAggregationInput = {
   signalCount?: Prisma.SortOrder
   product?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  transcription?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -396,6 +407,7 @@ export type MeetingScalarWhereWithAggregatesInput = {
   signalCount?: Prisma.IntWithAggregatesFilter<"Meeting"> | number
   product?: Prisma.StringNullableWithAggregatesFilter<"Meeting"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Meeting"> | string | null
+  transcription?: Prisma.StringNullableWithAggregatesFilter<"Meeting"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Meeting"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Meeting"> | Date | string
@@ -416,6 +428,7 @@ export type MeetingCreateInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -436,6 +449,7 @@ export type MeetingUncheckedCreateInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -456,6 +470,7 @@ export type MeetingUpdateInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -476,6 +491,7 @@ export type MeetingUncheckedUpdateInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -496,6 +512,7 @@ export type MeetingCreateManyInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -516,6 +533,7 @@ export type MeetingUpdateManyMutationInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -534,6 +552,7 @@ export type MeetingUncheckedUpdateManyInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -572,6 +591,7 @@ export type MeetingCountOrderByAggregateInput = {
   signalCount?: Prisma.SortOrder
   product?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  transcription?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -594,6 +614,7 @@ export type MeetingMaxOrderByAggregateInput = {
   signalCount?: Prisma.SortOrder
   product?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  transcription?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -612,6 +633,7 @@ export type MeetingMinOrderByAggregateInput = {
   signalCount?: Prisma.SortOrder
   product?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  transcription?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -750,6 +772,7 @@ export type MeetingCreateWithoutCreatorInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -769,6 +792,7 @@ export type MeetingUncheckedCreateWithoutCreatorInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -817,6 +841,7 @@ export type MeetingScalarWhereInput = {
   signalCount?: Prisma.IntFilter<"Meeting"> | number
   product?: Prisma.StringNullableFilter<"Meeting"> | string | null
   description?: Prisma.StringNullableFilter<"Meeting"> | string | null
+  transcription?: Prisma.StringNullableFilter<"Meeting"> | string | null
   notes?: Prisma.StringNullableFilter<"Meeting"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Meeting"> | Date | string
@@ -837,6 +862,7 @@ export type MeetingCreateWithoutCompanyInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -856,6 +882,7 @@ export type MeetingUncheckedCreateWithoutCompanyInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -901,6 +928,7 @@ export type MeetingCreateManyCreatorInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -920,6 +948,7 @@ export type MeetingUpdateWithoutCreatorInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -939,6 +968,7 @@ export type MeetingUncheckedUpdateWithoutCreatorInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -958,6 +988,7 @@ export type MeetingUncheckedUpdateManyWithoutCreatorInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -977,6 +1008,7 @@ export type MeetingCreateManyCompanyInput = {
   signalCount?: number
   product?: string | null
   description?: string | null
+  transcription?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -996,6 +1028,7 @@ export type MeetingUpdateWithoutCompanyInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1015,6 +1048,7 @@ export type MeetingUncheckedUpdateWithoutCompanyInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1034,6 +1068,7 @@ export type MeetingUncheckedUpdateManyWithoutCompanyInput = {
   signalCount?: Prisma.IntFieldUpdateOperationsInput | number
   product?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transcription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1055,6 +1090,7 @@ export type MeetingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   signalCount?: boolean
   product?: boolean
   description?: boolean
+  transcription?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1077,6 +1113,7 @@ export type MeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   signalCount?: boolean
   product?: boolean
   description?: boolean
+  transcription?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1099,6 +1136,7 @@ export type MeetingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   signalCount?: boolean
   product?: boolean
   description?: boolean
+  transcription?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1121,6 +1159,7 @@ export type MeetingSelectScalar = {
   signalCount?: boolean
   product?: boolean
   description?: boolean
+  transcription?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1128,7 +1167,7 @@ export type MeetingSelectScalar = {
   createdBy?: boolean
 }
 
-export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "date" | "time" | "participants" | "status" | "summary" | "owner" | "tags" | "signalCount" | "product" | "description" | "notes" | "createdAt" | "updatedAt" | "companyId" | "createdBy", ExtArgs["result"]["meeting"]>
+export type MeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "date" | "time" | "participants" | "status" | "summary" | "owner" | "tags" | "signalCount" | "product" | "description" | "transcription" | "notes" | "createdAt" | "updatedAt" | "companyId" | "createdBy", ExtArgs["result"]["meeting"]>
 export type MeetingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   creator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1161,6 +1200,7 @@ export type $MeetingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     signalCount: number
     product: string | null
     description: string | null
+    transcription: string | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -1603,6 +1643,7 @@ export interface MeetingFieldRefs {
   readonly signalCount: Prisma.FieldRef<"Meeting", 'Int'>
   readonly product: Prisma.FieldRef<"Meeting", 'String'>
   readonly description: Prisma.FieldRef<"Meeting", 'String'>
+  readonly transcription: Prisma.FieldRef<"Meeting", 'String'>
   readonly notes: Prisma.FieldRef<"Meeting", 'String'>
   readonly createdAt: Prisma.FieldRef<"Meeting", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Meeting", 'DateTime'>

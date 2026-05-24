@@ -12,7 +12,8 @@
 export const MeetingStatus = {
   scheduled: 'scheduled',
   in_review: 'in_review',
-  decided: 'decided'
+  decided: 'decided',
+  analyzed: 'analyzed'
 } as const
 
 export type MeetingStatus = (typeof MeetingStatus)[keyof typeof MeetingStatus]

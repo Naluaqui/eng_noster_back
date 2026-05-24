@@ -1,5 +1,6 @@
 import { env } from '../../config/env';
 import { AppError } from '../../shared/errors/AppError';
+import { markMeetingsAnalyzed } from '../meetings/meetings.repository';
 import { findMeetingsForAnalysis } from './multi-agents.repository';
 import type { AiAnalysisRequest, AiAnalysisResponse, AnalysisMeeting, AnalyzeMeetingsInput } from './multi-agents.types';
 
@@ -16,14 +17,14 @@ function createAnalysisId(meetings: AnalysisMeeting[]) {
 function buildTranscript(meetings: AnalysisMeeting[]) {
   const transcriptMeetings = meetings.map((meeting) => ({
     ...meeting,
-    transcript: meeting.description?.trim(),
+    transcript: meeting.transcription?.trim(),
   }));
   const meetingsWithoutTranscript = transcriptMeetings
     .filter((meeting) => !meeting.transcript)
     .map((meeting) => meeting.id);
 
   if (meetingsWithoutTranscript.length > 0) {
-    throw new AppError('Uma ou mais reunioes anexadas nao possuem transcricao na descricao.', 400, {
+    throw new AppError('Uma ou mais reunioes anexadas nao possuem transcricao.', 400, {
       meetingIds: meetingsWithoutTranscript,
     });
   }
@@ -241,6 +242,8 @@ export async function analyzeMeetings(companyId: string | undefined, input: Anal
         status: response.status,
       });
     }
+  } else {
+    await markMeetingsAnalyzed(input.meetingIds, companyId, responseBody.analise.resumo_executivo);
   }
 
   return responseBody;

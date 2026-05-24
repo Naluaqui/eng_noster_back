@@ -73,6 +73,9 @@ const defaultMeetings: Array<Omit<Meeting, 'id'>> = [
   },
 ];
 
+const defaultMeetingSummary = 'Reuniao criada para analise no NOSTER.';
+const maximumSummaryLength = 500;
+
 function toDatabaseDate(date: string) {
   return new Date(`${date}T00:00:00.000Z`);
 }
@@ -87,6 +90,10 @@ function toDatabaseStatus(status: MeetingStatus): DatabaseMeetingStatus {
 
 function toApiStatus(status: DatabaseMeetingStatus): MeetingStatus {
   return status === 'in_review' ? 'in-review' : status;
+}
+
+function createSummary(description?: string, notes?: string) {
+  return (description || notes || defaultMeetingSummary).slice(0, maximumSummaryLength);
 }
 
 function mapMeetingToApi(meeting: DatabaseMeeting): Meeting {
@@ -303,7 +310,7 @@ export async function createMeeting(companyId: string | undefined, input: Create
       time: input.time,
       participants,
       status: 'scheduled',
-      summary: description || notes || 'Reuniao criada para analise no NOSTER.',
+      summary: createSummary(description, notes),
       owner: participants[0] ?? 'NOSTER',
       tags: product ? [product] : [],
       signalCount: 0,
@@ -340,7 +347,7 @@ export async function updateMeeting(meetingId: string, companyId: string | undef
         date: toDatabaseDate(input.date),
         time: input.time,
         participants,
-        summary: description || notes || 'Reuniao criada para analise no NOSTER.',
+        summary: createSummary(description, notes),
         owner: participants[0] ?? 'NOSTER',
         tags: product ? [product] : [],
         product: product || null,

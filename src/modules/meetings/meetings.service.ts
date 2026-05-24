@@ -127,10 +127,6 @@ function normalizeMeetingInput(input: CreateMeetingInput | UpdateMeetingInput) {
     throw new AppError('Produto deve ter ate 80 caracteres.', 400);
   }
 
-  if (description && description.length > 500) {
-    throw new AppError('Descricao deve ter ate 500 caracteres.', 400);
-  }
-
   if (notes && notes.length > 1000) {
     throw new AppError('Anotacoes devem ter ate 1000 caracteres.', 400);
   }

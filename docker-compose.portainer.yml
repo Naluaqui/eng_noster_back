@@ -1,0 +1,38 @@
+# Stack para deploy no Portainer
+#
+# Como usar:
+# 1. No Portainer, crie uma Stack (Web editor) colando este arquivo.
+# 2. Em "Environment variables", defina:
+#    - BACK_IMAGE  (ex: ghcr.io/<owner>/eng_decision_back:latest)
+#    - BACK_PORT   (opcional, padrao 5173)
+#    - DATABASE_URL
+#    - JWT_SECRET / JWT_EXPIRES_IN
+#    - GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REDIRECT_URI
+#    - AI_API_URL  (endereco da IA, ex: http://eng_decision_ia:51003)
+# 3. Salve a stack. Para receber novas IMGs automaticamente, ative o
+#    "Webhook" da stack e cole essa URL no secret PORTAINER_WEBHOOK_URL
+#    do repositorio no GitHub Actions.
+
+services:
+  back:
+    image: ${BACK_IMAGE:-ghcr.io/OWNER/eng_decision_back:latest}
+    container_name: eng_decision_back
+    restart: unless-stopped
+    ports:
+      - "${BACK_PORT:-5173}:5173"
+    environment:
+      PORT: 5173
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      AI_API_URL: ${AI_API_URL}
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5173/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

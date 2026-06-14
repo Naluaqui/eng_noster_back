@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 export const env = {
-  port: Number(process.env.PORT ?? 3334),
+  port: Number(process.env.PORT ?? 5173),
   nodeEnv: process.env.NODE_ENV ?? 'development',
 
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? '',

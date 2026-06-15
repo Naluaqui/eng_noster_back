@@ -9,6 +9,10 @@ COPY tsconfig.json prisma.config.ts ./
 COPY prisma ./prisma
 COPY src ./src
 
+# DATABASE_URL is only needed here to satisfy prisma.config.ts during
+# `prisma generate` (no real connection is made at build time). The
+# actual database is configured via DATABASE_URL at runtime.
+ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 RUN npx prisma generate
 RUN npm run build
 
